@@ -1,30 +1,18 @@
 FROM 358559522285.dkr.ecr.us-west-2.amazonaws.com/base-php74:7.4-amzn2
 
-# Create directory for custom ini
-RUN mkdir -p /tmp/custom-ini
+# Install AST extension and Composer, set PHP ini path
+RUN mkdir -p /tmp/custom-ini \
+    && pecl install ast \
+    && echo "extension=ast.so" > /tmp/custom-ini/enable-ast.ini \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Install ast extension via pecl for phan/phan library to work
-RUN pecl install ast \
-    && echo "extension=ast.so" > /tmp/custom-ini/enable-ast.ini
-
-# Set PHP_INI_SCAN_DIR to include default + your custom ini dir
 ENV PHP_INI_SCAN_DIR="/etc/php.d:/tmp/custom-ini"
 
-# Install curl (if not present), download Composer installer, install Composer globally
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Set working directory
 WORKDIR /app
+COPY . .
 
-# Copy current app code to container (optional, if you want your code inside image)
-COPY . /app
+# Clean install without lock/vendor
+RUN rm -f composer.lock && rm -rf vendor/ && composer install
 
-# Remove composer.lock and vendor if present (optional)
-RUN rm -f composer.lock && rm -rf vendor/
-
-# Install your dev dependencies
-RUN composer install
-
-# Override the the current entry point of our Deputy's PHP8 image
-# Currently, the image starts the apache e.g. "exec /usr/sbin/httpd -DFOREGROUND" and we are seeing Apache warnings, but we don't need Apache here
+# Disable default Apache entrypoint
 ENTRYPOINT []
