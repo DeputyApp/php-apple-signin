@@ -7,11 +7,15 @@ use AppleSignIn\JWT;
 use AppleSignIn\Payload;
 use AppleSignIn\PublicKeyFetcher;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class DecoderTest extends TestCase
 {
+    use ProphecyTrait;
 
-    /** @var PublicKeyFetcher */
+    /**
+     * @var \Prophecy\Prophecy\ObjectProphecy
+     */
     protected $fetcherMock;
 
     /** @var \stdClass */
@@ -22,7 +26,7 @@ class DecoderTest extends TestCase
      */
     private $jwtMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

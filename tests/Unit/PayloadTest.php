@@ -14,7 +14,7 @@ class PayloadTest extends TestCase
     /** @var \stdClass */
     private $jwtPayload;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -25,57 +25,47 @@ class PayloadTest extends TestCase
         $this->jwtPayload->aud = 'com.example.apple';
     }
 
-    /**
-     * @expectedException \AppleSignIn\Exception
-     * @expectedExceptionMessage Payload received null JWT.
-     */
     public function testPayloadInstanciatedWithNullObject()
     {
+        $this->expectException(\AppleSignIn\Exception::class);
+        $this->expectExceptionMessage('Payload received null JWT.');
+
         $payload = new Payload(null);
     }
 
-    /**
-     * @expectedException \AppleSignIn\Exception
-     * @expectedExceptionMessage Payload received invalid JWT. Missing email claim.
-     */
     public function testPayloadInstanciatedWithMissingEmailClaim()
     {
-        unset($this->jwtPayload->email);
+        $this->expectException(\AppleSignIn\Exception::class);
+        $this->expectExceptionMessage('Payload received invalid JWT. Missing email claim.');
 
+        unset($this->jwtPayload->email);
         $payload = new Payload($this->jwtPayload);
     }
 
-    /**
-     * @expectedException \AppleSignIn\Exception
-     * @expectedExceptionMessage Payload received invalid JWT. Missing subject claim.
-     */
     public function testPayloadInstanciatedWithMissingSubClaim()
     {
-        unset($this->jwtPayload->sub);
+        $this->expectException(\AppleSignIn\Exception::class);
+        $this->expectExceptionMessage('Payload received invalid JWT. Missing subject claim.');
 
+        unset($this->jwtPayload->sub);
         $payload = new Payload($this->jwtPayload);
     }
 
-    /**
-     * @expectedException \AppleSignIn\Exception
-     * @expectedExceptionMessage Payload received invalid JWT. Missing issuer claim.
-     */
     public function testPayloadInstanciatedWithMissingIssuerClaim()
     {
-        unset($this->jwtPayload->iss);
+        $this->expectException(\AppleSignIn\Exception::class);
+        $this->expectExceptionMessage('Payload received invalid JWT. Missing issuer claim.');
 
+        unset($this->jwtPayload->iss);
         $payload = new Payload($this->jwtPayload);
     }
 
-
-    /**
-     * @expectedException \AppleSignIn\Exception
-     * @expectedExceptionMessage Payload received invalid JWT. Invalid issuer claim.
-     */
     public function testPayloadInstanciatedWithInvalidIssuerClaim()
     {
-        $this->jwtPayload->iss = 'invalid';
+        $this->expectException(\AppleSignIn\Exception::class);
+        $this->expectExceptionMessage('Payload received invalid JWT. Invalid issuer claim.');
 
+        $this->jwtPayload->iss = 'invalid';
         $payload = new Payload($this->jwtPayload);
     }
 
@@ -95,7 +85,6 @@ class PayloadTest extends TestCase
 
     public function testGetAudienceReturnsAudClaim()
     {
-
         $payload = new Payload($this->jwtPayload);
 
         $this->assertEquals('com.example.apple', $payload->getAudience());

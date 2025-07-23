@@ -13,12 +13,12 @@ use PHPUnit\Framework\TestCase;
 class PublicKeyFetcherTest extends TestCase
 {
     /** @var string */
-    protected const KID = '86D88Kf';
+    protected const KID = 'E6q83RB15n';
 
     /** @var PublicKeyFetcher */
     private $fetcher;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -33,11 +33,10 @@ class PublicKeyFetcherTest extends TestCase
         $this->assertArrayHasKey('alg', $result);
     }
 
-    /**
-     * @expectedException \AppleSignIn\Exception
-     */
     public function testFetchThrowsExceptionWithInvalidKid(): void
     {
+        $this->expectException(\AppleSignIn\Exception::class);
+        $this->expectExceptionMessage('Invalid public key details');
         $this->fetcher->fetch('lol');
     }
 }
