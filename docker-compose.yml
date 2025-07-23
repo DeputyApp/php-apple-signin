@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  php-apple-signin-php8:
+    build:
+      context: .
+      dockerfile: Dockerfile.php8
+    environment:
+      VAULT_ENABLED: "false"
+    volumes:
+      - ./:/app
+    working_dir: /app
+  php-apple-signin-php74:
+    build:
+      context: .
+      dockerfile: Dockerfile.php74
+    environment:
+      VAULT_ENABLED: "false"
+    volumes:
+      - ./:/app
+    working_dir: /app

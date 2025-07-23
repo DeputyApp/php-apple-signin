@@ -2,4 +2,7 @@
 
 # composer vendor
 vendor
+composer.phar
 composer.lock
+.idea
+.phpunit.result.cache
