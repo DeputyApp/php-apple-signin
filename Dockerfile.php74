@@ -3,10 +3,7 @@ FROM 358559522285.dkr.ecr.us-west-2.amazonaws.com/base-php74:7.4-amzn2
 # Create directory for custom ini
 RUN mkdir -p /tmp/custom-ini
 
-# Add ini config to disable datadog AppSec
-RUN echo 'datadog.appsec.enabled=Off' > /tmp/custom-ini/disable-appsec.ini
-
-# Install ast extension via pecl
+# Install ast extension via pecl for phan/phan library to work
 RUN pecl install ast \
     && echo "extension=ast.so" > /tmp/custom-ini/enable-ast.ini
 

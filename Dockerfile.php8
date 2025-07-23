@@ -4,9 +4,12 @@ FROM 358559522285.dkr.ecr.us-west-2.amazonaws.com/base-php84:8.4-amzn2023-r2
 RUN mkdir -p /tmp/custom-ini
 
 # Add ini config to disable datadog AppSec
+# This is because in the Datadog Trace extension installed in our PHP8 base image,
+# Appsec extension is also by default installed, this causes Appsec to start and throw errors and performance overhead since we didn't set it up
+# Since we don't use Appsec feature (both PHP7.4 and PHP8.*), we need to disable it
 RUN echo 'datadog.appsec.enabled=Off' > /tmp/custom-ini/disable-appsec.ini
 
-# Install ast extension via pecl
+# Install ast extension via pecl for phan/phan library to work
 RUN pecl install ast \
     && echo "extension=ast.so" > /tmp/custom-ini/enable-ast.ini
 
@@ -28,7 +31,7 @@ RUN rm -f composer.lock && rm -rf vendor/
 # Install your dev dependencies
 RUN composer install
 
-# Override the the current entry point of our Deputy's PHP8 image
+# Override the the current entry point of our PHP8 image
 # Currently, the image starts the apache e.g. "exec /usr/sbin/httpd -DFOREGROUND" and we are seeing Apache warnings, but we don't need Apache here
 ENTRYPOINT []
 
